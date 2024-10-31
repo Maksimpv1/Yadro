@@ -7,7 +7,7 @@ module double_tokens
     input        clk,
     input        rst,
     input        a,
-    output       b,
+    output reg      b,
     output logic overflow
 );
     // Task:
@@ -24,6 +24,33 @@ module double_tokens
     // Example:
     // a -> 10010011000110100001100100
     // b -> 11011011110111111001111110
+
+    reg [8:0] count;
+    reg prev;
+
+    always_ff @(posedge clk posedge rst)
+    if(rst)
+        b <= '0;
+        count <= '0;
+        overflow <= '0;
+        prev <= '0;
+    else begin
+        if(prev)
+            if( count < 200)
+                b <=  '1;
+                prev <= '0;
+                count <= count + 1;
+            else overflow <= '1;
+        else 
+            if(a) begin
+                prev <= '1;
+                b <= '1;
+            else
+                b <= '0;
+            end
+    if (overflow) 
+    $display("Overflow");
+    end
 
 
 endmodule
